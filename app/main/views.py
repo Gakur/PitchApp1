@@ -22,17 +22,21 @@ def index():
 @main.route('/posts')
 @login_required
 def posts():
+    '''
+    View post function that returns the post page and data
+    '''
+
     posts = Post.query.all()
     likes = Upvote.query.all()
     user = current_user
-    return render_template('pitch_display.html', posts=posts, likes=likes, user=user)
+    return render_template('post_display.html', posts=posts, likes=likes, user=user)
 
 
 @main.route('/new_post', methods=['GET', 'POST'])
 @login_required
 def new_post():
     '''
-    View pitch function that returns the post page and data
+    View post function that returns the new post page and data
     '''
 
     form = PostForm()
@@ -44,14 +48,14 @@ def new_post():
         post_obj = Post(post=post, title=title, category=category, user_id=user_id)
         post_obj.save()
         return redirect(url_for('main.index'))
-    return render_template('pitch.html', form=form)
+    return render_template('post.html', form=form)
 
 
 @main.route('/comment/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def comment(post_id):
     '''
-    View pitch function that returns the pitch page and data
+    View post function that returns the comment page and data
     '''
 
     form = CommentForm()
@@ -125,7 +129,7 @@ def downvote(id):
     '''
     View dislike function that returns dislikes
     '''
-    
+
     post = Post.query.get(id)
     vm = Downvote(post=post, downvote=1)
     vm.save()
