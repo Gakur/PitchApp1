@@ -8,10 +8,14 @@ from ..models import Post, Comment, User, Upvote, Downvote
 
 @main.route('/')
 def index():
+    '''
+    View root page function that returns the index page and its data
+    '''
     posts = Post.query.all()
     interview = Post.query.filter_by(category='interview').all()
     sport = Post.query.filter_by(category='sport').all()
     motivation = Post.query.filter_by(category='motivation').all()
+
     return render_template('index.html', interview=interview, sport=sport, motivation=motivation, posts=posts)
 
 
@@ -27,6 +31,10 @@ def posts():
 @main.route('/new_post', methods=['GET', 'POST'])
 @login_required
 def new_post():
+    '''
+    View pitch function that returns the post page and data
+    '''
+
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -42,6 +50,10 @@ def new_post():
 @main.route('/comment/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def comment(post_id):
+    '''
+    View pitch function that returns the pitch page and data
+    '''
+
     form = CommentForm()
     post = Post.query.get(post_id)
     user = User.query.all()
@@ -65,6 +77,10 @@ def comment(post_id):
 @main.route('/user')
 @login_required
 def user():
+    '''
+    View profile page function that returns the profile page and its data
+    '''
+
     username = current_user.username
     user = User.query.filter_by(username=username).first()
     if user is None:
@@ -75,6 +91,10 @@ def user():
 @main.route('/user/<name>/update_profile', methods=['POST', 'GET'])
 @login_required
 def updateprofile(name):
+    '''
+    View update profile page function that returns the update profile page and its data
+    '''
+
     form = UpdateProfile()
     user = User.query.filter_by(username=name).first()
     if user is None:
@@ -89,6 +109,10 @@ def updateprofile(name):
 @main.route('/like/<int:id>', methods=['POST', 'GET'])
 @login_required
 def upvote(id):
+    '''
+    View like function that returns likes
+    '''
+
     post = Post.query.get(id)
     vote_mpya = Upvote(post=post, upvote=1)
     vote_mpya.save()
@@ -98,6 +122,10 @@ def upvote(id):
 @main.route('/dislike/<int:id>', methods=['GET', 'POST'])
 @login_required
 def downvote(id):
+    '''
+    View dislike function that returns dislikes
+    '''
+    
     post = Post.query.get(id)
     vm = Downvote(post=post, downvote=1)
     vm.save()
