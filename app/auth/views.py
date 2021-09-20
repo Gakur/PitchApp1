@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user
 
 from app.auth import auth
 from app.models import User
-from ..email import email_message
+from ..email import mail_message
 
 
 @auth.route('/login', methods=['GET', 'POST'])
