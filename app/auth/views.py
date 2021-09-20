@@ -8,6 +8,10 @@ from ..email import email_message
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Function that logs in an existing user
+    """
+
     if request.method == 'POST':
         form = request.form
         username = form.get('username')
@@ -29,6 +33,10 @@ def login():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    """
+    Funtion that creates an account for a new user
+    """
+
     if request.method == 'POST':
         form = request.form
         username = form.get("username")
@@ -42,12 +50,12 @@ def signup():
             error = 'Username should not contain spaces'
             return render_template('signup.html', error=error)
         if password != confirm_password:
-            error = "Passwords do not match"
+            error = "Sorry passwords do not match"
             return render_template('signup.html', error=error)
         else:
             user = User.query.filter_by(username=username).first()
             if user is not None:
-                error = 'A user with that name already exists'
+                error = 'username already exists'
                 return render_template('signup.html', error=error)
             user = User.query.filter_by(email=email).first()
             if user is not None:
@@ -63,5 +71,9 @@ def signup():
 
 @auth.route('/logout')
 def logout():
+    """
+    Function that logs out a user
+    """
+
     logout_user()
     return redirect(url_for('auth.login'))
