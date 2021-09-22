@@ -22,7 +22,7 @@ def create_app(config_name):
     # Creating the app configurations
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://peter:peter2021@localhost/PitchApp'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://peter:peter2021@localhost/pitchapp1'
 
     # Creating the app configurations
 
