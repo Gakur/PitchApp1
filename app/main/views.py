@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 from . import main
-from .forms import PostForm, CommentForm, UpdateProfile
+from .forms import PostForm, CommentForm, UpdateProfile, Sport
 from ..models import Post, Comment, User, Upvote, Downvote
 
 
@@ -28,7 +28,7 @@ def posts():
     posts = Post.query.all()
     likes = Upvote.query.all()
     user = current_user
-    return render_template('post_display.html', posts=posts, likes=likes, user=user)
+    return render_template('pitch_details.html', posts=posts, likes=likes, user=user)
 
 
 @main.route('/new_post', methods=['GET', 'POST'])
@@ -47,7 +47,7 @@ def new_post():
         post_obj = Post(post=post, title=title, category=category, user_id=user_id)
         post_obj.save()
         return redirect(url_for('main.index'))
-    return render_template('post.html', form=form)
+    return render_template('pitch.html', form=form)
 
 
 @main.route('/comment/<int:post_id>', methods=['GET', 'POST'])
@@ -88,7 +88,7 @@ def user():
     user = User.query.filter_by(username=username).first()
     if user is None:
         return ('not found')
-    return render_template('profile.html', user=user)
+    return render_template('profile/profile.html', user=user)
 
 
 @main.route('/user/<name>/update_profile', methods=['POST', 'GET'])
@@ -106,7 +106,7 @@ def updateprofile(name):
         user.bio = form.bio.data
         user.save()
         return redirect(url_for('.profile', name=name))
-    return render_template('profile/update_profile.html', form=form)
+    return render_template('profile/update.html', form=form)
 
 
 @main.route('/like/<int:id>', methods=['POST', 'GET'])
@@ -133,3 +133,17 @@ def downvote(id):
     vm = Downvote(post=post, downvote=1)
     vm.save()
     return redirect(url_for('main.posts'))
+
+@main.route('/user/category/sport', methods=['GET', 'POST'])
+@login_required
+def advertisement():
+    form = Sport()
+    title = 'Post a pitch'
+    if form.validate_on_submit():
+        post = form.post.data
+        body = form.body.data
+        new_sport = Sport(post=post, user=current_user, body=body)
+        new_sport.save_advertisement()
+        return redirect(url_for('.sport'))
+    return render_template("sport.html", sport_form=form, title=title)
+
