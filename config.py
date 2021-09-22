@@ -3,7 +3,6 @@ import os
 class Config:
     debug = True
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://peter:peter2021@localhost/PitchApp'
 
     #  email configurations
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -29,7 +28,7 @@ class TestConfig(Config):
     Args:
         Config: The parent configuration class with General configuration settings
     '''
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://peter:peter2021@localhost/PitchApp_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://pjnr:peter1010@localhost/pitchapp1'
 
 class DevConfig(Config):
     '''
@@ -38,7 +37,7 @@ class DevConfig(Config):
     Args:
         Config: The parent configuration class with General configuration settings
     '''
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://peter:peter2021@localhost/PitchApp'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://pjnr:peter1010@localhost/pitchapp1'
     
     
     DEBUG = True
