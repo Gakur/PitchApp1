@@ -1,79 +1,53 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user
+from .form import LoginForm, SignupForm
+from .. import db
 
 from app.auth import auth
 from app.models import User
 from ..email import mail_message
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=["GET", "POST"])
 def login():
-    """
-    Function that logs in an existing user
-    """
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        user = User.query.filter_by(email=login_form.email.data).first()
+        if user is not None and user.check_password(login_form.password.data):
+            login_user(user, login_form.remember.data)
+            flash('Invalid username or Password')
+            return redirect(url_for('main.index'))       
 
-    if request.method == 'POST':
-        form = request.form
-        username = form.get('username')
-        password = form.get('password')
-        print(username)
-        user = User.query.filter_by(username=username).first()
-        if user is None:
-            error = 'A user with that username  does not exist'
-            return render_template('login.html', error=error)
-        is_correct_password = user.check_password(password)
-        print(is_correct_password)
-        if not is_correct_password:
-            error = 'A user with that password does not exist'
-            return render_template('login.html', error=error)
-        login_user(user)
-        return redirect('/')
-    return render_template('login.html')
+    title = "pitch login"
+    return render_template('auth/login.html', login_form=login_form, title=title)
+    
 
 
-@auth.route('/signup', methods=['GET', 'POST'])
-def signup():
-    """
-    Funtion that creates an account for a new user
-    """
-
-    if request.method == 'POST':
-        form = request.form
-        username = form.get("username")
-        email = form.get("email")
-        password = form.get("password")
-        confirm_password = form.get("confirm_password")
-        if username is None or password is None or email is None or confirm_password is None:
-            error = 'username, email, password are required'
-            return render_template('signup.html', error=error)
-        if ' ' in username:
-            error = 'Username should not contain spaces'
-            return render_template('signup.html', error=error)
-        if password != confirm_password:
-            error = "Sorry passwords do not match"
-            return render_template('signup.html', error=error)
-        else:
-            user = User.query.filter_by(username=username).first()
-            if user is not None:
-                error = 'username already exists'
-                return render_template('signup.html', error=error)
-            user = User.query.filter_by(email=email).first()
-            if user is not None:
-                error = 'A user with that email already exists'
-                return render_template('signup.html', error=error)
-            user = User(username=username, email=email)
-            user.set_password(password)
-            user.save()
-            return redirect(url_for('auth.login'))
-
-    return render_template('signup.html')
-
-
-@auth.route('/logout')
+@auth.route("/logout")
+# @login_required
 def logout():
-    """
-    Function that logs out a user
-    """
-
     logout_user()
-    return redirect(url_for('auth.login'))
+    title = "pitch"
+    flash('You have been successfully logged out')
+    return redirect(url_for("auth.login"))
+
+
+@auth.route('/signup', methods=["GET", "POST"])
+def signup():
+    form = SignupForm()
+    title = "New Account"
+    if form.validate_on_submit():
+        user = User(email=form.email.data,username=form.username.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('auth.login'))
+    return render_template('auth/signup.html', signup_form=form, title=title)
+
+# @auth.route('/logout')
+# def logout():
+#     """
+#     Function that logs out a user
+#     """
+
+#     logout_user()
+#     return redirect(url_for('auth.login'))
