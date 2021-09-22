@@ -92,8 +92,9 @@ After extracting the files,
 
 
 
-## Contacts 
-**ccayreen24@gmail.com**
+## Contacts
+**For reviews and feedback kindly email me at:**
+* petergakure97@gmail.com
 
 
 ## Live link 
