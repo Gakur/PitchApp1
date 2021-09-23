@@ -37,17 +37,16 @@ def new_post():
     '''
     View post function that returns the new post page and data
     '''
-
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
         post = form.post.data
         category = form.category.data
         user_id = current_user._get_current_object().id
-        post_obj = Post(post=post, title=title, category=category, user_id=user_id)
-        post_obj.save()
-        return redirect(url_for('main.index'))
-    return render_template('pitch.html', form=form)
+        new_post = Post(post=post, title=title, category=category, user_id=user_id)
+        new_post.save()
+        return redirect(url_for('.index'))
+    return render_template('new_post.html', form=form)
 
 
 @main.route('/comment/<int:post_id>', methods=['GET', 'POST'])
@@ -136,7 +135,7 @@ def downvote(id):
 
 @main.route('/user/category/sport', methods=['GET', 'POST'])
 @login_required
-def advertisement():
+def sport():
     form = Sport()
     title = 'Post a pitch'
     if form.validate_on_submit():
