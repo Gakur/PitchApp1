@@ -46,7 +46,7 @@ def new_post():
         new_post = Post(post=post, title=title, category=category, user_id=user_id)
         new_post.save()
         return redirect(url_for('.index'))
-    return render_template('new_post.html', form=form)
+    return render_template('pitch.html', form=form)
 
 
 @main.route('/comment/<int:post_id>', methods=['GET', 'POST'])
