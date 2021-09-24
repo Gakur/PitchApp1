@@ -1,38 +1,29 @@
 {% extends 'base.html'%}
-{% from 'comment_details.html' import display_comments%}
+{% from 'comment_detail.html' import display_comments%}
 {% import "bootstrap/wtf.html" as wtf %}
 
 
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static',filename='css/particle.css')}}">
+<link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="card">
-        <div class="media-body">
-            <div class="row">
-                
-                <div class="col-md-10">
-                    <p class="pitch-metadata">
-                        <h3 class="inline"><a class="pitch-title" href="#">{{pitch.pitch_title}}</a></h3>
-                        <small class="text-muted">  Posted on {{pitch.posted.strftime('%d/%m/%Y')}} | {{pitch.category}}</small>
-
-
-                        <hr>
-                    </p>
-                    <p class="pitch-content">{{pitch.content}}</p>
-                    <small class="text-muted">
-                     <p class="mr-2">-Author {{pitch.user.username}}</p>
-                    </small>
-                    <p class="pitchback">  <a href="/"> Back to pitches </a> </p>
-                </div>
-            </div>
-        </div>
-
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>Comments page</h1>
+        <a href="/posts"><button class="btn">Get back to All Pitches</button></a>
     </div>
+<div class="row col-md-12">
     <div class="col-md-4">
-        {{ wtf.quick_form(comment_form)}}
+        <div class="text-white">{{wtf.quick_form(form)}}</div>
     </div>
-    <div class="something">
-         {{display_comments(comments)}}
+    <div class="col-md-8">
+        <h2 class="text-center text-white">All comments:</h2>
+        <p>{{display_comments(comments)}}</p>
     </div>
 </div>
 
-{% endblock %}
+</div>
+{% endblock%}

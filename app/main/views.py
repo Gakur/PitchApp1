@@ -6,6 +6,7 @@ from ..models import Post, Comment, User, Upvote, Downvote
 
 
 @main.route('/')
+@login_required
 def index():
     '''
     View root page function that returns the index page and its data
@@ -116,8 +117,8 @@ def upvote(id):
     '''
 
     post = Post.query.get(id)
-    vote_mpya = Upvote(post=post, upvote=1)
-    vote_mpya.save()
+    new_vote = Upvote(post=post, upvote=1)
+    new_vote.save()
     return redirect(url_for('main.posts'))
 
 
@@ -142,7 +143,7 @@ def sport():
         post = form.post.data
         body = form.body.data
         new_sport = Sport(post=post, user=current_user, body=body)
-        new_sport.save_advertisement()
+        new_sport.save_sport()
         return redirect(url_for('.sport'))
     return render_template("sport.html", sport_form=form, title=title)
 
