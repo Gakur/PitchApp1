@@ -3,6 +3,7 @@ import os
 class Config:
     debug = True
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    UPLOADED_PHOTOS_DEST ='app/static/photos'
 
     #  email configurations
     MAIL_SERVER = 'smtp.googlemail.com'

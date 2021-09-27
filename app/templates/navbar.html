@@ -13,7 +13,7 @@
         </ul>
         <ul class="navbar-nav my-2 my-lg-0">
             <li class="nav-item">
-                <a class="nav-link login-text text-white" href="/login"
+                <a class="nav-link login-text text-white" href="{{url_for('auth.login')}}"
                     style="font-size:30px;margin-right:40%">Login</a>
             </li>
             <li class="nav-item">
@@ -21,7 +21,7 @@
                     style="font-size:30px;margin-right:20%">User Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link login-text text-white" href="/logout"
+                <a class="nav-link login-text text-white" href="{{url_for('auth.login')}}"
                     style="font-size:30px;margin-left:10%">Logout</a>
             </li>
         </ul>

@@ -1,8 +1,9 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from . import main
 from .forms import PostForm, CommentForm, UpdateProfile, Sport
 from ..models import Post, Comment, User, Upvote, Downvote
+from .. import db, photos
 
 
 @main.route('/')
@@ -77,36 +78,41 @@ def comment(post_id):
     return render_template('comment.html', form=form, post=post, comments=comments, user=user)
 
 
-@main.route('/user')
-@login_required
-def user():
-    '''
-    View profile page function that returns the profile page and its data
-    '''
-
-    username = current_user.username
-    user = User.query.filter_by(username=username).first()
+@main.route('/user/<name>')
+def profile(name):
+    user = User.query.filter_by(username = name).first()
+    user_id = current_user._get_current_object().id
+    posts = Post.query.filter_by(user_id = user_id).all()
     if user is None:
-        return ('not found')
-    return render_template('profile/profile.html', user=user)
+        (404)
+
+    return render_template("profile/profile.html", user = user,posts=posts)
 
 
-@main.route('/user/<name>/update_profile', methods=['POST', 'GET'])
+@main.route('/user/<name>/updateprofile', methods = ['POST','GET'])
 @login_required
 def updateprofile(name):
-    '''
-    View update profile page function that returns the update profile page and its data
-    '''
-
     form = UpdateProfile()
-    user = User.query.filter_by(username=name).first()
-    if user is None:
-        error = 'The user does not exist'
+    user = User.query.filter_by(username = name).first()
+    if user == None:
+        (404)
     if form.validate_on_submit():
         user.bio = form.bio.data
-        user.save()
-        return redirect(url_for('.profile', name=name))
-    return render_template('profile/update.html', form=form)
+        user.save_u()
+        return redirect(url_for('.profile',name = name))
+    return render_template('profile/update.html',form =form)    
+
+
+@main.route('/user/<name>/update/pic',methods= ['POST'])
+@login_required
+def update_pic(name):
+    user = User.query.filter_by(username = name).first()
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
+        db.session.commit()
+    return redirect(url_for('main.profile',name=name))
 
 
 @main.route('/like/<int:id>', methods=['POST', 'GET'])
